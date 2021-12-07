@@ -1,0 +1,8 @@
+myvenv/
+nginx_deploy/
+mysql/
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3

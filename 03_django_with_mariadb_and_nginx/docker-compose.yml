@@ -1,0 +1,36 @@
+version: "3"
+services:
+  db_mysql:
+    image:  mariadb:10
+    container_name: db_mysql
+    ports:
+      - "33006:3306"
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypass
+      MYSQL_ROOT_PASSWORD: rootpass
+    command:
+      - --character-set-server=utf8
+      - --collation-server=utf8_general_ci
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+  app:
+    build: app
+    container_name: django-gunicorn
+    restart: always
+    ports:
+      - "8000:8000"
+    command:
+      "gunicorn --workers=2 --bind=0.0.0.0:8000 mysite.wsgi:application"
+
+  nginx:
+    image: nginx:1.17
+    container_name: ngx
+    ports:
+      - "80:80"
+    volumes:  
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
